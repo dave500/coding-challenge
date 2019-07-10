@@ -48,7 +48,14 @@ namespace ShipCoordinatesChallenge
 
         private static bool Step(Current current, int i, string journey)
         {
-            throw new NotImplementedException();
+            // Get direction of travel
+            char movementKey = journey[i];
+            if (!movements.ContainsKey(movementKey))
+            {
+                throw new InvalidOperationException($"Invalid movement: {movementKey}");
+            }
+
+            return true;
         }
 
         private static  (int, int) Orientations(int x, int y)
