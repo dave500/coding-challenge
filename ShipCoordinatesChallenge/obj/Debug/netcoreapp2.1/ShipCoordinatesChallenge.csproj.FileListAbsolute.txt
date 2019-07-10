@@ -1,0 +1,11 @@
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.csprojAssemblyReference.cache
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.csproj.CoreCompileInputs.cache
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.AssemblyInfoInputs.cache
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.AssemblyInfo.cs
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\bin\Debug\netcoreapp2.1\ShipCoordinatesChallenge.deps.json
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\bin\Debug\netcoreapp2.1\ShipCoordinatesChallenge.runtimeconfig.json
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\bin\Debug\netcoreapp2.1\ShipCoordinatesChallenge.runtimeconfig.dev.json
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\bin\Debug\netcoreapp2.1\ShipCoordinatesChallenge.dll
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\bin\Debug\netcoreapp2.1\ShipCoordinatesChallenge.pdb
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.dll
+C:\Dev\Stratum5\coding-challenge\ShipCoordinatesChallenge\obj\Debug\netcoreapp2.1\ShipCoordinatesChallenge.pdb
