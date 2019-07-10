@@ -31,10 +31,25 @@ namespace ShipCoordinatesChallenge
                 GridSize = gridSize
             };
 
+            /// OK Now make some moves
+            for (var i = 0; i < journey.Length; i++)
+            {
+                var success = Step(current, i, journey);
+
+                if (!success)
+                {
+                    break;
+                }
+            }
+
+
             Console.ReadLine();
         }
 
-       
+        private static bool Step(Current current, int i, string journey)
+        {
+            throw new NotImplementedException();
+        }
 
         private static  (int, int) Orientations(int x, int y)
         {
