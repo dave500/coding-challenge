@@ -55,22 +55,65 @@ namespace ShipCoordinatesChallenge
                 throw new InvalidOperationException($"Invalid movement: {movementKey}");
             }
 
+            current.Orientation = movementKey.ToString();
+
+            var orientation = movements[movementKey].Item1;
+            var move = movements[movementKey].Item2;
+
+
+            if (move)
+            {
+                var (newX, newY) = Orientations(current.Postion.Item1, current.Postion.Item2, movementKey.ToString());
+
+                if (newX < 0 || newX > current.GridSize.X || newY < 0 || newY > current.GridSize.Y)
+                {
+                    Console.WriteLine("Gone over the edge!");
+                    return false;
+                }
+
+                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.Orientation}, Move: {move}");
+                current.Postion = (newX, newY);
+
+            }
+
             return true;
         }
 
-        private static  (int, int) Orientations(int x, int y)
+        private static  (int, int) Orientations(int x, int y, string orientation)
         {
-            // returns y & x+ 1 etc
+            
+            switch (orientation)
+            {
+                case "N":
+                    y = y + 1;
+                    return (x, y);
+                case "E":
+                    x = x + 1;
+                    return (x, y);
+                case "S":
+                    y = y - 1;
+                    return (x, y);
+                case "W":
+                    x = x - 1;
+                    return (x, y);
+                default:
+                    break;
+            }
 
             throw new NotImplementedException();
 
         }
 
-        private static readonly IDictionary<char, int> movements = new Dictionary<char, int>
+        /// <summary>
+        /// Movements Dictionaty based on movement char 
+        /// returns numeric rotation and bool to represent if a Step
+        /// takes place
+        /// </summary>
+        private static readonly IDictionary<char, (int, bool)> movements = new Dictionary<char, (int, bool)>
         {
-            {'F', 0 },
-            {'R', 1 },
-            {'L', 2},
+            {'F', (0, true) },
+            {'R', (1, false) },
+            {'L', (-1, false)},
         };
 
         private static (int, int) validateGridSize(string y, string x)
