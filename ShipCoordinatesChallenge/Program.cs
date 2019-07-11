@@ -46,6 +46,10 @@ namespace ShipCoordinatesChallenge
                 // TODO Better way to do this for 1 char
                 char[] o = startOrientation.ToCharArray();
                 current.OrientationIndex = Array.IndexOf(orientationKeys, o[0]);
+                if (current.OrientationIndex == -1)
+                {
+                    throw new InvalidOperationException($"Invalid Input Orientation {startOrientation}");
+                }
 
                 bool success = false;
 
