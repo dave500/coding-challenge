@@ -9,7 +9,7 @@ namespace ShipCoordinatesChallenge
     {
 
         // Test Input strings
-        // 5 3 1 1 E RFRFRFFFF
+        // 5 3 1 1 E RFRFRFRF
         // 5 3 3 2 N FRRFLLFFRRFLL
         // 5 3 0 3 W LLFFFLFLFL
 
@@ -20,12 +20,12 @@ namespace ShipCoordinatesChallenge
            
                 Console.WriteLine("Enter the 6 Args of Your Journey  ");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine().ToUpper();
                 string[] ia = input.Split(' ');
 
                 if (ia.Length != 6)
                 {
-                    throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRF");
+                    throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRFRF");
                 }
 
                 var gridSize = validateGridSize(ia[0], ia[1]);
@@ -38,9 +38,14 @@ namespace ShipCoordinatesChallenge
                 var current = new Current
                 {
                     Orientation = startOrientation,
-                    Postion = startPos,
-                    GridSize = gridSize
-                };
+                        Postion = startPos,
+                        GridSize = gridSize
+                 };
+
+                // Insure OrientationIndex is set correctly first time out
+                // TODO Better way to do this for 1 char
+                char[] o = startOrientation.ToCharArray();
+                current.OrientationIndex = Array.IndexOf(orientationKeys, o[0]);
 
                 bool success = false;
 
@@ -72,8 +77,10 @@ namespace ShipCoordinatesChallenge
             current.Orientation = movementKey.ToString();
 
             // 3rd test Input string breaks this. Limit to range 0 - 3
-            current.OrientationIndex += movements[movementKey].Item1 % 4;
+            // TODO Extract to method
+            current.OrientationIndex += movements[movementKey].Item1;
             current.OrientationIndex = (current.OrientationIndex < 0) ? 3 : current.OrientationIndex;
+            current.OrientationIndex = (current.OrientationIndex > 3) ? 0 : current.OrientationIndex;
 
             var move = movements[movementKey].Item2;
 
@@ -101,8 +108,9 @@ namespace ShipCoordinatesChallenge
                     }
                 }
 
-                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}");
                 current.Postion = (newX, newY);
+                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}");
+               
 
             }
 
