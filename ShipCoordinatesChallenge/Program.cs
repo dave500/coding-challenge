@@ -31,10 +31,12 @@ namespace ShipCoordinatesChallenge
                 GridSize = gridSize
             };
 
+            bool success = false;
+
             /// OK Now make some moves
             for (var i = 0; i < journey.Length; i++)
             {
-                var success = Step(current, i, journey);
+                (current, success) = Step(current, i, journey);
 
                 if (!success)
                 {
@@ -46,7 +48,7 @@ namespace ShipCoordinatesChallenge
             Console.ReadLine();
         }
 
-        private static bool Step(Current current, int i, string journey)
+        private static (Current, bool) Step(Current current, int i, string journey)
         {
             // Get direction of travel
             char movementKey = journey[i];
@@ -57,43 +59,43 @@ namespace ShipCoordinatesChallenge
 
             current.Orientation = movementKey.ToString();
 
-            var orientation = movements[movementKey].Item1;
+            current.OrientationIndex += movements[movementKey].Item1;
             var move = movements[movementKey].Item2;
 
 
             if (move)
             {
-                var (newX, newY) = Orientations(current.Postion.Item1, current.Postion.Item2, movementKey.ToString());
+                var (newX, newY) = Orientations(current.Postion.Item1, current.Postion.Item2, current.OrientationIndex);
 
                 if (newX < 0 || newX > current.GridSize.X || newY < 0 || newY > current.GridSize.Y)
                 {
                     Console.WriteLine("Gone over the edge!");
-                    return false;
+                    return (current, false);
                 }
 
-                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.Orientation}, Move: {move}");
+                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}");
                 current.Postion = (newX, newY);
 
             }
 
-            return true;
+            return (current, true);
         }
 
-        private static  (int, int) Orientations(int x, int y, string orientation)
+        private static  (int, int) Orientations(int x, int y, int orientation)
         {
             
             switch (orientation)
             {
-                case "N":
+                case 0:
                     y = y + 1;
                     return (x, y);
-                case "E":
+                case 1:
                     x = x + 1;
                     return (x, y);
-                case "S":
+                case 2:
                     y = y - 1;
                     return (x, y);
-                case "W":
+                case 3:
                     x = x - 1;
                     return (x, y);
                 default:
@@ -135,6 +137,7 @@ namespace ShipCoordinatesChallenge
         public struct Current
         {
             public string Orientation { get; set; }
+            public int OrientationIndex { get; set; }
             public (int, int) Postion { get; set; }
             public (int X, int Y) GridSize { get; set; }
         }
