@@ -9,6 +9,7 @@ namespace ShipCoordinatesChallenge
     {
 
         // Test Input strings
+        // 5 3 1 1 E RFRFRFFFF
         // 5 3 3 2 N FRRFLLFFRRFLL
         // 5 3 0 3 W LLFFFLFLFL
 
@@ -70,14 +71,11 @@ namespace ShipCoordinatesChallenge
 
             current.Orientation = movementKey.ToString();
 
-            // 3rd Input string breaks this limit to range 0 - 3
+            // 3rd test Input string breaks this. Limit to range 0 - 3
             current.OrientationIndex += movements[movementKey].Item1 % 4;
-
             current.OrientationIndex = (current.OrientationIndex < 0) ? 3 : current.OrientationIndex;
 
-
             var move = movements[movementKey].Item2;
-
 
             if (move)
             {
@@ -85,17 +83,22 @@ namespace ShipCoordinatesChallenge
 
                 if (newX < 0 || newX > current.GridSize.X || newY < 0 || newY > current.GridSize.Y)
                 {
-
-                    //Store Warning Details
-
-
+                    //Check / Store Warning Details
                     WarningCoords wc = new WarningCoords();
                     wc.OrientationIndex = current.OrientationIndex;
                     wc.Postion = current.Postion;
-                    StoreWarningCoords.CheckWarningCoords(wc);
+                    bool warningRecieved = StoreWarningCoords.CheckWarningCoords(wc);
 
-                    Console.WriteLine("Gone over the edge!");
-                    return (current, false);
+                    if (!warningRecieved)
+                    {
+                        Console.WriteLine($"Current position: {current.Postion}, {orientationKeys[current.OrientationIndex]}, LOST");
+                        return (current, false);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}, ALERT");
+                        return (current, true);
+                    }
                 }
 
                 Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}");
