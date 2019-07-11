@@ -1,52 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace ShipCoordinatesChallenge
 {
     class Program
     {
+
+        // Test Input strings
+        // 5 3 3 2 N FRRFLLFFRRFLL
+        // 5 3 0 3 W LLFFFLFLFL
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter the 6 Args of Your Journey  ");
+            List<WarningCoords> warnings = new List<WarningCoords>();
 
-            string input = Console.ReadLine();
-            string[] ia = input.Split(' ');
+           
+                Console.WriteLine("Enter the 6 Args of Your Journey  ");
 
-            if (ia.Length != 6)
-            {
-                throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRF");
-            }
+                string input = Console.ReadLine();
+                string[] ia = input.Split(' ');
 
-            var gridSize = validateGridSize(ia[0], ia[1]);
-            var startPos = validateStartPos(ia[2], ia[3]);
-            var startOrientation = ia[4];
-            var journey = ia[5];
-
-            Console.WriteLine($"gridSize: {gridSize}, startPos: {startPos}, startOrientation: {startOrientation}, journey: {journey}");
-
-            var current = new Current
-            {
-                Orientation = startOrientation,
-                Postion = startPos,
-                GridSize = gridSize
-            };
-
-            bool success = false;
-
-            /// OK Now make some moves
-            for (var i = 0; i < journey.Length; i++)
-            {
-                (current, success) = Step(current, i, journey);
-
-                if (!success)
+                if (ia.Length != 6)
                 {
-                    break;
+                    throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRF");
                 }
+
+                var gridSize = validateGridSize(ia[0], ia[1]);
+                var startPos = validateStartPos(ia[2], ia[3]);
+                var startOrientation = ia[4];
+                var journey = ia[5];
+
+                Console.WriteLine($"gridSize: {gridSize}, startPos: {startPos}, startOrientation: {startOrientation}, journey: {journey}");
+
+                var current = new Current
+                {
+                    Orientation = startOrientation,
+                    Postion = startPos,
+                    GridSize = gridSize
+                };
+
+                bool success = false;
+
+                /// OK Now make some moves
+                for (var i = 0; i < journey.Length; i++)
+                {
+                    (current, success) = Step(current, i, journey);
+
+                    if (!success)
+                    {
+                        break;
+                    }
+                }
+
+                Console.ReadLine();
             }
 
-
-            Console.ReadLine();
-        }
+            
 
         private static (Current, bool) Step(Current current, int i, string journey)
         {
@@ -59,7 +70,12 @@ namespace ShipCoordinatesChallenge
 
             current.Orientation = movementKey.ToString();
 
-            current.OrientationIndex += movements[movementKey].Item1;
+            // 3rd Input string breaks this limit to range 0 - 3
+            current.OrientationIndex += movements[movementKey].Item1 % 4;
+
+            current.OrientationIndex = (current.OrientationIndex < 0) ? 3 : current.OrientationIndex;
+
+
             var move = movements[movementKey].Item2;
 
 
@@ -69,6 +85,15 @@ namespace ShipCoordinatesChallenge
 
                 if (newX < 0 || newX > current.GridSize.X || newY < 0 || newY > current.GridSize.Y)
                 {
+
+                    //Store Warning Details
+
+
+                    WarningCoords wc = new WarningCoords();
+                    wc.OrientationIndex = current.OrientationIndex;
+                    wc.Postion = current.Postion;
+                    StoreWarningCoords.CheckWarningCoords(wc);
+
                     Console.WriteLine("Gone over the edge!");
                     return (current, false);
                 }
@@ -80,6 +105,9 @@ namespace ShipCoordinatesChallenge
 
             return (current, true);
         }
+
+        
+
 
         private static  (int, int) Orientations(int x, int y, int orientation)
         {
@@ -141,6 +169,8 @@ namespace ShipCoordinatesChallenge
             public (int, int) Postion { get; set; }
             public (int X, int Y) GridSize { get; set; }
         }
+
+        
 
         private static char[] orientationKeys = new[] { 'N', 'E', 'S', 'W' };
     }
