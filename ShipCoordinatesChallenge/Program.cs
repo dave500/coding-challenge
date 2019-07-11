@@ -76,11 +76,8 @@ namespace ShipCoordinatesChallenge
 
             current.Orientation = movementKey.ToString();
 
-            // 3rd test Input string breaks this. Limit to range 0 - 3
-            // TODO Extract to method
-            current.OrientationIndex += movements[movementKey].Item1;
-            current.OrientationIndex = (current.OrientationIndex < 0) ? 3 : current.OrientationIndex;
-            current.OrientationIndex = (current.OrientationIndex > 3) ? 0 : current.OrientationIndex;
+            //Limit to range 0 - 3
+            current = SetOrientationIndex(current, movementKey);
 
             var move = movements[movementKey].Item2;
 
@@ -90,11 +87,8 @@ namespace ShipCoordinatesChallenge
 
                 if (newX < 0 || newX > current.GridSize.X || newY < 0 || newY > current.GridSize.Y)
                 {
-                    //Check / Store Warning Details
-                    WarningCoords wc = new WarningCoords();
-                    wc.OrientationIndex = current.OrientationIndex;
-                    wc.Postion = current.Postion;
-                    bool warningRecieved = StoreWarningCoords.CheckWarningCoords(wc);
+                    //Handle Warning Details
+                    bool warningRecieved = HandleWarning(ref current);
 
                     if (!warningRecieved)
                     {
@@ -103,26 +97,46 @@ namespace ShipCoordinatesChallenge
                     }
                     else
                     {
-                        Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}, ALERT");
+                        Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {orientationKeys[current.OrientationIndex]}, Move: {move}, ALERT");
                         return (current, true);
                     }
                 }
 
                 current.Postion = (newX, newY);
-                Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {current.OrientationIndex}, Move: {move}");
-               
 
             }
 
+            Console.WriteLine($"Movement: {movementKey}, Current position: {current.Postion}, Orientation: {orientationKeys[current.OrientationIndex]}, Move: {move}");
             return (current, true);
         }
 
-        
-
-
-        private static  (int, int) Orientations(int x, int y, int orientation)
+        private static Current SetOrientationIndex(Current current, char movementKey)
         {
-            
+            current.OrientationIndex += movements[movementKey].Item1;
+            current.OrientationIndex = (current.OrientationIndex < 0) ? 3 : current.OrientationIndex;
+            current.OrientationIndex = (current.OrientationIndex > 3) ? 0 : current.OrientationIndex;
+            return current;
+        }
+
+        private static bool HandleWarning(ref Current current)
+        {
+            WarningCoords wc = new WarningCoords();
+            wc.OrientationIndex = current.OrientationIndex;
+            wc.Postion = current.Postion;
+            bool warningRecieved = StoreWarningCoords.CheckWarningCoords(wc);
+            return warningRecieved;
+        }
+
+
+        /// <summary>
+        /// Amends xy axis position by 1 depending on orientation index
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
+        private static (int, int) Orientations(int x, int y, int orientation)
+        { 
             switch (orientation)
             {
                 case 0:
@@ -141,8 +155,7 @@ namespace ShipCoordinatesChallenge
                     break;
             }
 
-            throw new NotImplementedException();
-
+            throw new InvalidOperationException("Orientation Index Out of bounds");
         }
 
         /// <summary>
