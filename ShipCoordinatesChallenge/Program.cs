@@ -18,7 +18,7 @@ namespace ShipCoordinatesChallenge
             List<WarningCoords> warnings = new List<WarningCoords>();
 
            
-                Console.WriteLine("Enter the 6 Args of Your Journey  ");
+                Console.WriteLine("Enter the 6 Args of Your Journey");
 
                 string input = Console.ReadLine().ToUpper();
                 string[] ia = input.Split(' ');
@@ -134,6 +134,7 @@ namespace ShipCoordinatesChallenge
 
         /// <summary>
         /// Amends xy axis position by 1 depending on orientation index
+        /// TODO Amend this to return function?
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

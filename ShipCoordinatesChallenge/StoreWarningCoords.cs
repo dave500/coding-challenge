@@ -15,6 +15,11 @@ namespace ShipCoordinatesChallenge
             List<WarningCoords> deserializedWarningCoords = new List<WarningCoords>();
             bool alreadyInList = false;
 
+            if (!Directory.Exists(@"C:\Dev"))
+            {
+                throw new Exception(@"Directory Does Not Exist Please add C:\Dev");
+            }
+
             if (File.Exists(@"C:\Dev\store.xml"))
             {
                 using (FileStream fs = new FileStream(@"C:\Dev\store.xml", FileMode.Open))
