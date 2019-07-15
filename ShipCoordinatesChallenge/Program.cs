@@ -14,57 +14,54 @@ namespace ShipCoordinatesChallenge
         // 5 3 0 3 W LLFFFLFLFL
 
         static void Main(string[] args)
-        {
-            List<WarningCoords> warnings = new List<WarningCoords>();
+        {        
+            Console.WriteLine("Enter the 6 Args of Your Journey");
 
-           
-                Console.WriteLine("Enter the 6 Args of Your Journey");
+            string input = Console.ReadLine().ToUpper();
+            string[] ia = input.Split(' ');
 
-                string input = Console.ReadLine().ToUpper();
-                string[] ia = input.Split(' ');
+            if (ia.Length != 6)
+            {
+                throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRFRF");
+            }
 
-                if (ia.Length != 6)
+            var gridSize = validateGridSize(ia[0], ia[1]);
+            var startPos = validateStartPos(ia[2], ia[3]);
+            var startOrientation = ia[4];
+            var journey = ia[5];
+
+            Console.WriteLine($"gridSize: {gridSize}, startPos: {startPos}, startOrientation: {startOrientation}, journey: {journey}");
+
+            var current = new Current
+            {
+                Orientation = startOrientation,
+                    Postion = startPos,
+                    GridSize = gridSize
+                };
+
+            // Insure OrientationIndex is set correctly first time out
+            // TODO Better way to do this for 1 char
+            char[] o = startOrientation.ToCharArray();
+            current.OrientationIndex = Array.IndexOf(orientationKeys, o[0]);
+            if (current.OrientationIndex == -1)
+            {
+                throw new InvalidOperationException($"Invalid Input Orientation {startOrientation}");
+            }
+
+            bool success = false;
+
+            /// OK Now make some moves
+            for (var i = 0; i < journey.Length; i++)
+            {
+                (current, success) = Step(current, i, journey);
+
+                if (!success)
                 {
-                    throw new InvalidOperationException("Expected 6 arguments like:\n5 3 1 1 E RFRFRFRF");
+                    break;
                 }
+            }
 
-                var gridSize = validateGridSize(ia[0], ia[1]);
-                var startPos = validateStartPos(ia[2], ia[3]);
-                var startOrientation = ia[4];
-                var journey = ia[5];
-
-                Console.WriteLine($"gridSize: {gridSize}, startPos: {startPos}, startOrientation: {startOrientation}, journey: {journey}");
-
-                var current = new Current
-                {
-                    Orientation = startOrientation,
-                        Postion = startPos,
-                        GridSize = gridSize
-                 };
-
-                // Insure OrientationIndex is set correctly first time out
-                // TODO Better way to do this for 1 char
-                char[] o = startOrientation.ToCharArray();
-                current.OrientationIndex = Array.IndexOf(orientationKeys, o[0]);
-                if (current.OrientationIndex == -1)
-                {
-                    throw new InvalidOperationException($"Invalid Input Orientation {startOrientation}");
-                }
-
-                bool success = false;
-
-                /// OK Now make some moves
-                for (var i = 0; i < journey.Length; i++)
-                {
-                    (current, success) = Step(current, i, journey);
-
-                    if (!success)
-                    {
-                        break;
-                    }
-                }
-
-                Console.ReadLine();
+            Console.ReadLine();
             }
 
             
